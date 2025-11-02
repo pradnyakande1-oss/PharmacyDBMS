@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #e6fff3 0%, #c2f0d6 100%);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #2f855a;
+  color: #fff;
+  padding: 25px 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.3em;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 15px 0;
+}
+
+.sidebar ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 10px 15px;
+  display: block;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li.active a {
+  background: #38a169;
+}
+
+/* Main content area */
+.main-content {
+  flex: 1;
+  padding: 20px 40px;
+}
+
+/* Top bar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.topbar h1 {
+  color: #14532d;
+  font-size: 1.6em;
+}
+
+.topbar input {
+  padding: 10px 15px;
+  border: 1px solid #a7dfbe;
+  border-radius: 25px;
+  width: 220px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.topbar input:focus {
+  border-color: #38a169;
+  box-shadow: 0 0 5px rgba(56,161,105,0.4);
+}
+
+/* Card styling */
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+/* Add medicine form */
+#medicineForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+#medicineForm input {
+  padding: 10px;
+  border: 1px solid #cde9d9;
+  border-radius: 8px;
+  flex: 1 1 160px;
+}
+
+#medicineForm button {
+  background: #2f855a;
+  color: #fff;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+#medicineForm button:hover {
+  background: #276749;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+}
+
+th {
+  background: #e6f5ed;
+  color: #256145;
+}
+
+td {
+  border-bottom: 1px solid #edf7f1;
+}
+
+.delete-btn {
+  background: #e53e3e;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #c53030;
+}

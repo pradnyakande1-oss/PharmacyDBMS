@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supplier Management</title>
+  <link rel="stylesheet" href="css/supplier.css" />
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>💊 Pharmacy</h2>
+    <ul>
+      <li><a href="index.html">🏠 Dashboard</a></li>
+      <li><a href="view_medicine.html">📦 View Stock</a></li>
+      <li><a href="bill.html">🧾 Billing</a></li>
+      <li class="active"><a href="supplier.html">👥 Suppliers</a></li>
+      <li><a href="#">📈 Reports</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <header class="topbar">
+      <h1>👥 Supplier Management</h1>
+      <p id="datetime"></p>
+    </header>
+
+    <!-- Add Supplier Form -->
+    <section class="card supplier-form">
+      <h2>➕ Add New Supplier</h2>
+      <form id="supplierForm">
+        <div class="row">
+          <input type="text" name="name" id="name" placeholder="Supplier/Company Name" required>
+          <input type="text" name="address" id="address" placeholder="Address" required>
+        </div>
+
+        <div class="row">
+          <input type="tel" name="contact_info" id="contact_info" placeholder="Contact Number" required>
+          <input type="email" id="email" placeholder="Email Address">
+        </div>
+
+        <div class="row">
+          <input type="text" id="medicine" placeholder="Supplied Medicines">
+          <select id="payment">
+            <option value="">Payment Method</option>
+            <option>Cash</option>
+            <option>UPI</option>
+            <option>Bank Transfer</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <select id="status">
+            <option value="">Payment Status</option>
+            <option>Paid</option>
+            <option>Pending</option>
+            <option>Partially Paid</option>
+          </select>
+          <input type="date" id="date">
+        </div>
+
+        <textarea id="remarks" placeholder="Remarks / Comments..." rows="2"></textarea>
+        <button type="submit">Add Supplier</button>
+      </form>
+    </section>
+
+    <!-- Supplier Table -->
+    <section class="card supplier-table">
+      <h2>📋 Supplier List</h2>
+      <table id="supplierTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Contact Info</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <footer>
+      <p>© 2025 Pharmacy Inventory | Developed by Prachi & Pradnya</p>
+    </footer>
+  </div>
+
+  <!-- External JS -->
+  <script src="js/supplier.js"></script>
+</body>
+</html>

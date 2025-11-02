@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #dff8eb, #b7e4c7);
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.invoice-container {
+  width: 800px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.pharmacy-details {
+  text-align: center;
+}
+
+.pharmacy-details h1 {
+  color: #1e5631;
+  margin-bottom: 5px;
+}
+
+.pharmacy-details p {
+  margin: 4px 0;
+  color: #333;
+}
+
+.customer-details {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.customer-details input {
+  border: none;
+  border-bottom: 1px solid #aaa;
+  padding: 5px;
+  width: 200px;
+  font-size: 15px;
+}
+
+.medicine-section {
+  margin-top: 20px;
+}
+
+.medicine-section h2 {
+  color: #1e5631;
+  margin-bottom: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background: #e8f5e9;
+  color: #14532d;
+}
+
+.add-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.add-row select, .add-row input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.add-row button {
+  background: #2f855a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 15px;
+  cursor: pointer;
+}
+
+.add-row button:hover {
+  background: #276749;
+}
+
+.summary {
+  margin-top: 20px;
+  background: #f6fff9;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #d6f5e5;
+}
+
+.summary h2 {
+  color: #1e5631;
+  margin-bottom: 10px;
+}
+
+.summary p {
+  font-size: 16px;
+  color: #222;
+  margin: 5px 0;
+}
+
+footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #444;
+}
+
+footer button {
+  margin-top: 10px;
+  background: #2f855a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+footer button:hover {
+  background: #256145;
+}
+
+@media print {
+  footer button { display: none; }
+  body { background: white; }
+}

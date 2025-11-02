@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharmacy Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <header>
+    <h1>💊 Pharmacy Inventory Management System</h1>
+    <p id="datetime"></p>
+  </header>
+
+  <!-- Search bar -->
+  <section class="search-section">
+    <input type="text" id="searchBox" placeholder="Search medicine...">
+    <button onclick="searchMedicine()">Search</button>
+  </section>
+
+  <!-- Dashboard options -->
+  <section class="dashboard">
+    <div class="card" onclick="location.href='view_stock.html'">
+      <h3>📦 View Stock</h3>
+      <p>Check available medicines and quantities</p>
+    </div>
+
+    <div class="card" onclick="location.href='billing.html'">
+      <h3>🧾 Billing</h3>
+      <p>Generate customer bills easily</p>
+    </div>
+
+    <div class="card" onclick="location.href='supplier.html'">
+      <h3>🏢 Suppliers</h3>
+      <p>Manage supplier details</p>
+    </div>
+
+    <div class="card" onclick="alert('Coming Soon!')">
+      <h3>📈 Reports</h3>
+      <p>View daily or monthly sales summary</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 Pharmacy Inventory | Developed by Prachi & Pradnya</p>
+  </footer>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

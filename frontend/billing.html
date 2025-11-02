@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharmacy Bill</title>
+  <link rel="stylesheet" href="css/billing.css">
+</head>
+<body>
+  <div class="invoice-container" id="invoice">
+    <section class="pharmacy-details">
+      <h1>💊 CarePlus Medical Store</h1>
+      <p>Near City Hospital, Panaji - Goa</p>
+      <p>Contact: +91 98765 43210 | GSTIN: 27ABCDE1234F1Z5</p>
+      <hr>
+    </section>
+
+    <section class="customer-details">
+      <div>
+        <label>Customer Name:</label>
+        <input type="text" id="custName" placeholder="Enter customer name" required>
+      </div>
+      <div>
+        <label>Date:</label>
+        <input type="text" id="billDate" readonly>
+      </div>
+    </section>
+
+    <section class="medicine-section">
+      <h2>Medicines</h2>
+      <table id="billTable">
+        <thead>
+          <tr>
+            <th>Medicine</th>
+            <th>Qty</th>
+            <th>Price (₹)</th>
+            <th>Subtotal (₹)</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="add-row">
+        <select id="medicineSelect" onchange="updatePrice()">
+          <option value="">--Select Medicine--</option>
+        </select>
+        <input type="number" id="price" placeholder="Price" readonly>
+        <input type="number" id="qty" placeholder="Qty" min="1">
+        <input type="number" id="subtotal" placeholder="Subtotal" readonly>
+        <button onclick="addMedicine()">➕ Add</button>
+      </div>
+    </section>
+
+    <section class="summary">
+      <h2>Billing Summary</h2>
+      <p>Total Amount: ₹<span id="total">0</span></p>
+      <p>Discount (5%): ₹<span id="discount">0</span></p>
+      <p><strong>Final Amount: ₹<span id="finalAmount">0</span></strong></p>
+    </section>
+
+    <footer>
+      <p>Thank you for choosing <strong>CarePlus Medical Store</strong>.</p>
+      <p><em>Medicines once sold will not be returned.</em></p>
+      <!-- ✅ Replaced print button with Save & Print -->
+      <button onclick="saveBill()">💾 Save & Print Bill</button>
+    </footer>
+  </div>
+
+  <script src="js/billing.js"></script>
+</body>
+</html>
