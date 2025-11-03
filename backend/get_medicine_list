@@ -5,7 +5,6 @@ $sql = "SELECT m_id, m_name, price FROM medicine ORDER BY m_name ASC";
 $result = $conn->query($sql);
 
 $medicines = [];
-
 while ($row = $result->fetch_assoc()) {
     $medicines[] = $row;
 }

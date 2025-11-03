@@ -1,86 +1,88 @@
 document.addEventListener("DOMContentLoaded", function() {
+  loadCustomers();
   loadMedicines();
-  document.getElementById("billDate").value = new Date().toLocaleDateString("en-IN");
+
+  document.getElementById("billDate").value = new Date().toLocaleDateString();
 });
 
-// Load all medicines into dropdown
-function loadMedicines() {
-  fetch("../../backend/get_medicine_list.php")
+function loadCustomers() {
+  fetch("http://localhost/Pharmacy-Inventory-Management-System/backend/get_customer.php")
     .then(res => res.json())
     .then(data => {
-      const select = document.getElementById("medicineSelect");
-      select.innerHTML = '<option value="">--Select Medicine--</option>';
-      data.forEach(med => {
-        const option = document.createElement("option");
-        option.value = med.m_id;
-        option.textContent = med.m_name;
-        option.setAttribute("data-price", med.price);
-        select.appendChild(option);
+      const customerSelect = document.getElementById("customerSelect");
+      customerSelect.innerHTML = `<option value="">-- Select Customer --</option>`;
+      data.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.customer_id;
+        opt.textContent = c.name;
+        customerSelect.appendChild(opt);
+      });
+    })
+    .catch(err => console.error("Error loading customers:", err));
+}
+
+function loadMedicines() {
+  fetch("http://localhost/Pharmacy-Inventory-Management-System/backend/get_medicine.php")
+    .then(res => res.json())
+    .then(data => {
+      const medSelect = document.getElementById("medicineSelect");
+      medSelect.innerHTML = `<option value="">-- Select Medicine --</option>`;
+      data.forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m.m_id;
+        opt.textContent = m.m_name;
+        opt.setAttribute("data-price", m.price);
+        medSelect.appendChild(opt);
       });
     })
     .catch(err => console.error("Error loading medicines:", err));
 }
 
-// Update price and subtotal
 function updatePrice() {
-  const medicineSelect = document.getElementById("medicineSelect");
-  const price = medicineSelect.selectedOptions[0]?.getAttribute("data-price") || 0;
-  document.getElementById("price").value = price;
+  const medSelect = document.getElementById("medicineSelect");
+  const priceInput = document.getElementById("price");
+  const selectedOption = medSelect.options[medSelect.selectedIndex];
+  const price = selectedOption.getAttribute("data-price");
+  priceInput.value = price ? parseFloat(price) : 0;
   calculateSubtotal();
 }
 
-document.getElementById("qty").addEventListener("input", calculateSubtotal);
-
 function calculateSubtotal() {
+  const qty = parseFloat(document.getElementById("qty").value) || 0;
   const price = parseFloat(document.getElementById("price").value) || 0;
-  const qty = parseInt(document.getElementById("qty").value) || 0;
-  document.getElementById("subtotal").value = (price * qty).toFixed(2);
+  document.getElementById("subtotal").value = qty * price;
 }
 
-// Add medicine row
 function addMedicine() {
-  const medicineSelect = document.getElementById("medicineSelect");
-  const medicineName = medicineSelect.options[medicineSelect.selectedIndex].text;
-  const qty = document.getElementById("qty").value;
-  const price = document.getElementById("price").value;
-  const subtotal = document.getElementById("subtotal").value;
+  const medSelect = document.getElementById("medicineSelect");
+  const qty = parseInt(document.getElementById("qty").value);
+  const price = parseFloat(document.getElementById("price").value);
+  const subtotal = qty * price;
 
-  if (!medicineSelect.value || !qty) {
-    alert("Please select a medicine and quantity!");
+  if (!medSelect.value || qty <= 0) {
+    alert("Please select a medicine and enter valid quantity!");
     return;
   }
 
-  const tableBody = document.querySelector("#billTable tbody");
+  const table = document.querySelector("#billTable tbody");
   const row = document.createElement("tr");
   row.innerHTML = `
-    <td>${medicineName}</td>
+    <td>${medSelect.options[medSelect.selectedIndex].text}</td>
     <td>${qty}</td>
     <td>${price}</td>
     <td>${subtotal}</td>
-    <td><button onclick="deleteRow(this)">🗑</button></td>
+    <td><button onclick="this.parentElement.parentElement.remove(); updateTotals();">🗑</button></td>
   `;
-  tableBody.appendChild(row);
+  table.appendChild(row);
 
-  calculateTotal();
-  document.getElementById("medicineSelect").value = "";
-  document.getElementById("qty").value = "";
-  document.getElementById("price").value = "";
-  document.getElementById("subtotal").value = "";
+  updateTotals();
 }
 
-// Delete medicine row
-function deleteRow(btn) {
-  btn.closest("tr").remove();
-  calculateTotal();
-}
-
-// Calculate totals
-function calculateTotal() {
+function updateTotals() {
   const rows = document.querySelectorAll("#billTable tbody tr");
   let total = 0;
-
   rows.forEach(row => {
-    total += parseFloat(row.children[3].textContent) || 0;
+    total += parseFloat(row.cells[3].textContent);
   });
 
   const discount = total * 0.05;
@@ -89,44 +91,4 @@ function calculateTotal() {
   document.getElementById("total").textContent = total.toFixed(2);
   document.getElementById("discount").textContent = discount.toFixed(2);
   document.getElementById("finalAmount").textContent = finalAmount.toFixed(2);
-}
-
-// Save bill to backend
-function saveBill() {
-  const custName = document.getElementById("custName").value;
-  const total = document.getElementById("total").textContent;
-  const discount = document.getElementById("discount").textContent;
-  const finalAmount = document.getElementById("finalAmount").textContent;
-
-  if (!custName || finalAmount <= 0) {
-    alert("Please fill all details before saving the bill.");
-    return;
-  }
-
-  const items = [];
-  document.querySelectorAll("#billTable tbody tr").forEach(row => {
-    const medicine = row.children[0].textContent;
-    const qty = row.children[1].textContent;
-    const price = row.children[2].textContent;
-    items.push({ medicine, qty, price });
-  });
-
-  const formData = new FormData();
-  formData.append("customer_name", custName);
-  formData.append("total_amount", total);
-  formData.append("discount", discount);
-  formData.append("final_amount", finalAmount);
-  formData.append("items", JSON.stringify(items));
-
-  fetch("../../backend/add_bill.php", {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.text())
-  .then(msg => {
-    alert(msg);
-    window.print();
-    location.reload();
-  })
-  .catch(err => console.error("Error saving bill:", err));
 }

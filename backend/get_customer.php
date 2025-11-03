@@ -1,12 +1,15 @@
 <?php
 include 'db_connect.php';
 
-$sql = "SELECT * FROM customer ORDER BY customer_id DESC";
+// Fetch all customers from DB
+$sql = "SELECT customer_id, name FROM customer ORDER BY customer_id DESC";
 $result = $conn->query($sql);
 
 $customers = [];
-while ($row = $result->fetch_assoc()) {
-    $customers[] = $row;
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $customers[] = $row;
+    }
 }
 
 header('Content-Type: application/json');

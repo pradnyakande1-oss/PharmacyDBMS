@@ -1,30 +1,43 @@
 <?php
 include 'db_connect.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $customer_name = $_POST['customer_name'];
-    $total_amount = $_POST['total_amount'];
-    $discount = $_POST['discount'];
-    $final_amount = $_POST['final_amount'];
+// Read JSON body (since we are sending JSON from JS)
+$data = json_decode(file_get_contents("php://input"), true);
 
-    // Convert medicines list from JSON string to array
-    $items = json_decode($_POST['items'], true);
-    $b_items = "";
-    foreach ($items as $item) {
-        $b_items .= $item['medicine'] . " (x" . $item['qty'] . "), ";
-    }
-    $b_items = rtrim($b_items, ", ");
-
-    $date = date('Y-m-d H:i:s');
-    $p_id = 1; // You (the pharmacist)
-
-    $sql = "INSERT INTO bill (b_date, b_items, b_amount, p_id)
-            VALUES ('$date', '$b_items', '$final_amount', '$p_id')";
-
-    if ($conn->query($sql)) {
-        echo "✅ Bill added successfully!";
-    } else {
-        echo "❌ Error: " . $conn->error;
-    }
+if (!$data) {
+    die("❌ Invalid request — no data received.");
 }
+
+$customer_id = intval($data['customer_id']);
+$b_date = $data['b_date'];
+$b_amount = floatval($data['b_amount']);
+$items = $data['items'];
+$p_id = 1; // you are the only pharmacist
+
+if ($b_amount <= 0) {
+    die("❌ Bill amount must be greater than zero.");
+}
+
+// Insert into bill table
+$sql = $conn->prepare("INSERT INTO bill (b_date, b_amount, p_id, customer_id) VALUES (?, ?, ?, ?)");
+$sql->bind_param("sdii", $b_date, $b_amount, $p_id, $customer_id);
+$sql->execute();
+$bill_id = $conn->insert_id;
+
+// Insert each medicine item
+foreach ($items as $item) {
+    $med_id = intval($item['medId']);
+    $qty = intval($item['qty']);
+    $subtotal = floatval($item['subtotal']);
+
+    $stmt = $conn->prepare("INSERT INTO bill_items (b_id, m_id, quantity, subtotal) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("iiid", $bill_id, $med_id, $qty, $subtotal);
+    $stmt->execute();
+
+    // reduce medicine stock
+    $conn->query("UPDATE medicine SET quantity = quantity - $qty WHERE m_id = $med_id");
+}
+
+echo "✅ Bill saved successfully!";
+$conn->close();
 ?>

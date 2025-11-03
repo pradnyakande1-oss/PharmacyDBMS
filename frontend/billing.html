@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pharmacy Bill</title>
+  <title>Pharmacy Billing</title>
   <link rel="stylesheet" href="css/billing.css">
 </head>
 <body>
@@ -17,8 +17,10 @@
 
     <section class="customer-details">
       <div>
-        <label>Customer Name:</label>
-        <input type="text" id="custName" placeholder="Enter customer name" required>
+        <label>Customer:</label>
+        <select id="customerSelect" required>
+          <option value="">-- Select Customer --</option>
+        </select>
       </div>
       <div>
         <label>Date:</label>
@@ -32,8 +34,8 @@
         <thead>
           <tr>
             <th>Medicine</th>
-            <th>Qty</th>
             <th>Price (₹)</th>
+            <th>Qty</th>
             <th>Subtotal (₹)</th>
             <th>Action</th>
           </tr>
@@ -42,11 +44,11 @@
       </table>
 
       <div class="add-row">
-        <select id="medicineSelect" onchange="updatePrice()">
-          <option value="">--Select Medicine--</option>
+        <select id="medicineSelect" onchange="updatePrice()" required>
+          <option value="">-- Select Medicine --</option>
         </select>
         <input type="number" id="price" placeholder="Price" readonly>
-        <input type="number" id="qty" placeholder="Qty" min="1">
+        <input type="number" id="qty" placeholder="Qty" min="1" oninput="calculateSubtotal()">
         <input type="number" id="subtotal" placeholder="Subtotal" readonly>
         <button onclick="addMedicine()">➕ Add</button>
       </div>
@@ -57,13 +59,13 @@
       <p>Total Amount: ₹<span id="total">0</span></p>
       <p>Discount (5%): ₹<span id="discount">0</span></p>
       <p><strong>Final Amount: ₹<span id="finalAmount">0</span></strong></p>
+      <button id="saveBillBtn">💾 Save Bill</button>
     </section>
 
     <footer>
       <p>Thank you for choosing <strong>CarePlus Medical Store</strong>.</p>
       <p><em>Medicines once sold will not be returned.</em></p>
-      <!-- ✅ Replaced print button with Save & Print -->
-      <button onclick="saveBill()">💾 Save & Print Bill</button>
+      <button onclick="window.print()">🖨 Print Bill</button>
     </footer>
   </div>
 
