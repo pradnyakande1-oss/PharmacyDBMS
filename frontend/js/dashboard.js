@@ -1,21 +1,43 @@
-// Display current date & time
+document.addEventListener("DOMContentLoaded", function() {
+  updateDateTime();
+  setInterval(updateDateTime, 1000);
+});
+
+// 🕓 Show current date and time
 function updateDateTime() {
   const now = new Date();
-  const dateTime = now.toLocaleString("en-IN", {
-    dateStyle: "full",
-    timeStyle: "medium"
+  const date = now.toLocaleDateString('en-IN', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   });
-  document.getElementById("datetime").textContent = dateTime;
+  const time = now.toLocaleTimeString('en-IN');
+  document.getElementById("datetime").textContent = `${date} — ${time}`;
 }
-setInterval(updateDateTime, 1000);
-updateDateTime();
 
-// Simple search redirect (optional)
+// 🔍 Search medicine from database
 function searchMedicine() {
-  const query = document.getElementById("searchBox").value.trim();
-  if (query) {
-    alert(`Searching for medicine: ${query}`);
-  } else {
-    alert("Please enter a medicine name to search.");
-  }
+  const name = document.getElementById("searchInput").value.trim();
+  if (!name) return alert("Enter a medicine name!");
+
+  console.log("Searching for medicine:", name);
+
+  fetch("http://localhost/Pharmacy-Inventory-Management-System/backend/get_medicine.php")
+    .then((res) => {
+      if (!res.ok) throw new Error("HTTP error " + res.status);
+      return res.text();
+    })
+    .then((text) => {
+      console.log("Raw response:", text);
+      const data = JSON.parse(text);
+      const found = data.some(
+        (m) => m.m_name.toLowerCase() === name.toLowerCase()
+      );
+      alert(found ? "✅ Medicine is available!" : "❌ Medicine not found!");
+    })
+    .catch((err) => {
+      console.error("Search error:", err);
+      alert("⚠️ Search failed! Check console for details.");
+    });
 }

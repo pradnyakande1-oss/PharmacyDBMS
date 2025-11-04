@@ -3,22 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📊 Reports</title>
+  <title>📈 Reports | Pharmacy Dashboard</title>
   <link rel="stylesheet" href="css/reports.css">
 </head>
 <body>
-  <h1>📈 Sales Reports</h1>
-  <table id="reportTable">
-    <thead>
-      <tr>
-        <th>Bill ID</th>
-        <th>Date</th>
-        <th>Customer</th>
-        <th>Amount (₹)</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <aside class="sidebar">
+    <h2>💊 Pharmacy</h2>
+    <ul>
+      <li><a href="index.html">🏠 Dashboard</a></li>
+      <li><a href="view_stock.html">📦 View Stock</a></li>
+      <li><a href="billing.html">🧾 Billing</a></li>
+      <li><a href="supplier.html">👥 Suppliers</a></li>
+      <li class="active"><a href="reports.html">📈 Reports</a></li>
+    </ul>
+  </aside>
+
+  <div class="main-content">
+    <header>
+      <h1>📊 Reports & Analytics</h1>
+    </header>
+
+    <section class="card">
+      <h2>💰 Billing Summary</h2>
+      <p><strong>Total Bills:</strong> <span id="totalBills">0</span></p>
+      <p><strong>Total Sales (₹):</strong> <span id="totalSales">0</span></p>
+    </section>
+
+    <section class="card">
+      <h2>⚠️ Low Stock Medicines (Less than 5 units)</h2>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Quantity</th></tr>
+        </thead>
+        <tbody id="lowStockTable"></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>⏳ Expiring Soon (Within 7 Days)</h2>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Expiry Date</th></tr>
+        </thead>
+        <tbody id="expiringTable"></tbody>
+      </table>
+    </section>
+  </div>
+
   <script src="js/reports.js"></script>
 </body>
 </html>
