@@ -1,43 +1,89 @@
-document.addEventListener("DOMContentLoaded", function() {
-  updateDateTime();
-  setInterval(updateDateTime, 1000);
+document.addEventListener("DOMContentLoaded", function () {
+  loadCategories();
+  loadSuppliers();
 });
 
-// 🕓 Show current date and time
-function updateDateTime() {
-  const now = new Date();
-  const date = now.toLocaleDateString('en-IN', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-  const time = now.toLocaleTimeString('en-IN');
-  document.getElementById("datetime").textContent = `${date} — ${time}`;
+// 🧾 Load all unique categories
+function loadCategories() {
+  fetch("http://localhost/Pharmacy-Inventory-Management-System/backend/get_medicine.php")
+    .then(res => res.json())
+    .then(data => {
+      const categories = [...new Set(data.map(m => m.category))];
+      const select = document.getElementById("searchCategory");
+      categories.forEach(cat => {
+        if (cat && cat.trim() !== "") {
+          const opt = document.createElement("option");
+          opt.value = cat;
+          opt.textContent = cat;
+          select.appendChild(opt);
+        }
+      });
+    })
+    .catch(err => console.error("Error loading categories:", err));
 }
 
-// 🔍 Search medicine from database
-function searchMedicine() {
-  const name = document.getElementById("searchInput").value.trim();
-  if (!name) return alert("Enter a medicine name!");
+// 🧾 Load suppliers dynamically
+function loadSuppliers() {
+  fetch("http://localhost/Pharmacy-Inventory-Management-System/backend/get_supplier.php")
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById("searchSupplier");
+      data.forEach(supplier => {
+        const opt = document.createElement("option");
+        opt.value = supplier.name.toLowerCase();
+        opt.textContent = supplier.name;
+        select.appendChild(opt);
+      });
+    })
+    .catch(err => console.error("Error loading suppliers:", err));
+}
 
-  console.log("Searching for medicine:", name);
+// 🔍 Search medicines by name, category, or supplier
+function searchMedicine() {
+  const name = document.getElementById("searchBox").value.trim().toLowerCase();
+  const category = document.getElementById("searchCategory").value.trim().toLowerCase();
+  const supplier = document.getElementById("searchSupplier").value.trim().toLowerCase();
 
   fetch("http://localhost/Pharmacy-Inventory-Management-System/backend/get_medicine.php")
-    .then((res) => {
-      if (!res.ok) throw new Error("HTTP error " + res.status);
-      return res.text();
+    .then(res => res.json())
+    .then(data => {
+      const filtered = data.filter(med => {
+        const matchName = !name || med.m_name.toLowerCase().includes(name);
+        const matchCategory = !category || (med.category && med.category.toLowerCase() === category);
+        const matchSupplier = !supplier || (med.supplier_name && med.supplier_name.toLowerCase() === supplier);
+        return matchName && matchCategory && matchSupplier;
+      });
+
+      displaySearchResults(filtered);
     })
-    .then((text) => {
-      console.log("Raw response:", text);
-      const data = JSON.parse(text);
-      const found = data.some(
-        (m) => m.m_name.toLowerCase() === name.toLowerCase()
-      );
-      alert(found ? "✅ Medicine is available!" : "❌ Medicine not found!");
-    })
-    .catch((err) => {
-      console.error("Search error:", err);
-      alert("⚠️ Search failed! Check console for details.");
-    });
+    .catch(err => console.error("Error searching medicines:", err));
+}
+
+// 🧾 Display search results
+function displaySearchResults(medicines) {
+  const card = document.getElementById("searchResultsCard");
+  const tbody = document.querySelector("#searchResults tbody");
+  tbody.innerHTML = "";
+
+  if (!Array.isArray(medicines) || medicines.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">❌ No medicines found</td></tr>`;
+    card.style.display = "block";
+    return;
+  }
+
+  medicines.forEach(m => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${m.m_id}</td>
+      <td>${m.m_name}</td>
+      <td>${m.category}</td>
+      <td>${m.quantity}</td>
+      <td>${m.price}</td>
+      <td>${m.supplier_name || "—"}</td>
+      <td>${m.exp_date}</td>
+    `;
+    tbody.appendChild(row);
+  });
+
+  card.style.display = "block";
 }

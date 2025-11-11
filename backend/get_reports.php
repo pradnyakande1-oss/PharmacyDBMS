@@ -2,29 +2,54 @@
 include 'db_connect.php';
 header("Content-Type: application/json");
 
-// Low stock
-$lowStockResult = $conn->query("SELECT m_id, m_name, quantity FROM medicine WHERE quantity < 5");
-$lowStock = $lowStockResult ? $lowStockResult->fetch_all(MYSQLI_ASSOC) : [];
+// 🔹 Low stock medicines
+$lowStock = [];
+$result = $conn->query("SELECT * FROM medicine WHERE quantity < 5");
+if ($result) {
+  while ($row = $result->fetch_assoc()) {
+    $lowStock[] = $row;
+  }
+}
 
-// Expiring soon (0..7 days)
-$expiringQuery = "
-  SELECT m_id, m_name, exp_date, quantity,
-         DATEDIFF(exp_date, CURDATE()) AS days_left
-  FROM medicine
-  WHERE STR_TO_DATE(exp_date, '%Y-%m-%d') BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
-  ORDER BY exp_date ASC
-";
-$expiringResult = $conn->query($expiringQuery);
-$expiring = $expiringResult ? $expiringResult->fetch_all(MYSQLI_ASSOC) : [];
+// 🔹 Expiring soon (within 7 days)
+$expiring = [];
+$result = $conn->query("
+  SELECT * FROM medicine 
+  WHERE exp_date <= DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+");
+if ($result) {
+  while ($row = $result->fetch_assoc()) {
+    $expiring[] = $row;
+  }
+}
 
-// Summary totals from bill table
-$summaryResult = $conn->query("SELECT COUNT(b_id) AS total_bills, IFNULL(SUM(b_amount),0) AS total_sales FROM bill");
-$summary = $summaryResult ? $summaryResult->fetch_assoc() : ['total_bills'=>0,'total_sales'=>0];
+// 🔹 Total bills and total sales
+$summary = ["total_bills" => 0, "total_sales" => 0];
+$result = $conn->query("SELECT COUNT(*) as total_bills, SUM(b_amount) as total_sales FROM bill");
+if ($result) {
+  $summary = $result->fetch_assoc();
+}
+
+// 🔹 Top 3 highest sales
+$topSales = [];
+$result = $conn->query("
+  SELECT b.b_id, c.name AS customer_name, b.b_date, b.b_amount
+  FROM bill b
+  JOIN customer c ON b.customer_id = c.customer_id
+  ORDER BY b.b_amount DESC
+  LIMIT 3
+");
+if ($result) {
+  while ($row = $result->fetch_assoc()) {
+    $topSales[] = $row;
+  }
+}
 
 echo json_encode([
-  "low_stock" => $lowStock,
-  "expiring_soon" => $expiring,
-  "summary" => $summary
+  "lowStock" => $lowStock,
+  "expiring" => $expiring,
+  "summary" => $summary,
+  "topSales" => $topSales
 ]);
 
 $conn->close();

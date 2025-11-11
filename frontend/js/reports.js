@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // ⚠️ Low stock
       const lowStockTable = document.getElementById("lowStockTable");
-      if (data.low_stock && data.low_stock.length > 0) {
-        lowStockTable.innerHTML = data.low_stock
+      if (data.lowStock && data.lowStock.length > 0) {
+        lowStockTable.innerHTML = data.lowStock
           .map(
             (m) => `
               <tr>
@@ -30,20 +30,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // ⏳ Expiring soon
       const expiringTable = document.getElementById("expiringTable");
-      if (data.expiring_soon && data.expiring_soon.length > 0) {
-        expiringTable.innerHTML = data.expiring_soon
+      if (data.expiring && data.expiring.length > 0) {
+        expiringTable.innerHTML = data.expiring
           .map(
             (m) => `
               <tr>
                 <td>${m.m_id}</td>
                 <td>${m.m_name}</td>
                 <td>${m.exp_date}</td>
-                <td>${m.days_left} days left</td>
               </tr>`
           )
           .join("");
       } else {
-        expiringTable.innerHTML = `<tr><td colspan="4" style="text-align:center;">✅ No medicines expiring soon</td></tr>`;
+        expiringTable.innerHTML = `<tr><td colspan="3" style="text-align:center;">✅ No medicines expiring soon</td></tr>`;
+      }
+
+      // 🏆 Top 3 highest sales
+      const topSalesTable = document.getElementById("topSalesTable");
+      if (data.topSales && data.topSales.length > 0) {
+        topSalesTable.innerHTML = data.topSales
+          .map(
+            (s) => `
+              <tr>
+                <td>${s.b_id}</td>
+                <td>${s.customer_name}</td>
+                <td>${s.b_date}</td>
+                <td>₹${parseFloat(s.b_amount).toFixed(2)}</td>
+              </tr>`
+          )
+          .join("");
+      } else {
+        topSalesTable.innerHTML = `<tr><td colspan="4" style="text-align:center;">No sales records yet</td></tr>`;
       }
     })
     .catch((err) => {
@@ -51,4 +68,3 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("⚠️ Failed to load report data. Check console for details.");
     });
 });
-
